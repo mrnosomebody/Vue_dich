@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}
+{% load humanize %}
+
+{% block content %}
+    <div class="container">
+        <div class="columns">
+            <div class="column is-12">
+                <h1 class="title">User Search</h1>
+                <p>Searching: {{ query }}</p>
+                <hr>
+                <form method="get" action="{% url 'search' %}">
+                    <div class="field">
+                        <div class="control">
+                            <input type="text" class="input" name="query" value="{{ query }}">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <button class="button is-success">Search</button>
+                        </div>
+                    </div>
+                </form>
+                <hr>
+                <div class="search-results">
+                    {% if not posters and not posts %}
+                        <p>No results</p>
+                    {% endif %}
+
+                    {% if posters %}
+                        <strong>Authors</strong>
+                        {% for poster in posters %}
+                            <a href="{% url 'profile' poster.username %}">{{ poster.username }}</a>
+                        {% endfor %}
+                    {% endif %}
+                    {% if posts %}
+                        <strong>Posts</strong>
+                        <div class="wrapper-posts">
+                            {% for post in posts %}
+                                <div class="post">
+                                    <article class="media">
+                                        <figure class="media-left">
+                                            <p class="image is-64x64">
+                                                <img src="{{ post.created_by.profile.avatar.url }}"
+                                                     style="border-radius: 20px">
+                                            </p>
+                                        </figure>
+                                        <div class="media-content">
+                                            <div class="content">
+                                                <p>
+                                                    <strong><a href="{% url 'profile' post.created_by.username %}"> {{ post.created_by.username }}</a></strong>
+                                                    <small>{{ post.created_at|naturaltime }}</small>
+                                                    <br>
+                                                    {{ post.body }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

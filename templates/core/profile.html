@@ -1,0 +1,33 @@
+{% extends 'core/base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+    <div class="container" id="profileapp">
+        <div class="columns">
+            <div class="column" style="margin-left: 100px">
+                <h1 class="title">{{ user.username }}</h1>
+                    <figure class="image is-128x128">
+                        <img src="{{ user.profile.avatar.url }}" style="border-radius: 20px">
+                    </figure>
+            {% if user == request.user %}
+                <a href="{% url 'edit-profile' %}" class="button is-success" style="color: black">Edit profile</a>
+            {% endif %}
+                <br><br>
+                <div class="button is-success"><a style="color: black" href="{% url 'followers' user.username %}">Followers: {{ user.profile.followed_by.count }}</a></div>
+                <br><br>
+                <div class="button is-success"><a style="color: black" href="{% url 'follows' user.username %}">Follows: {{ user.profile.follows.count }}</a></div>
+
+                {% if user != request.user %}
+{#                    <a href="{% url 'conversation' user.id %}" class="button is-info">Send message</a>#}
+
+                    {% if request.user.profile in user.profile.followed_by.all %}
+                        <a href="{% url 'unfollow' user.username %}" class="button is-danger">Unfollow</a>
+                    {% else %}
+                        <a href="{% url 'follow' user.username %}" class="button is-success">Follow</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+            </div>
+    </div>
+{% endblock %}
